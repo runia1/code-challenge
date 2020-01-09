@@ -90,10 +90,13 @@ function handleSpecialCases(query: string): string {
   // letter sorting
   const lettersRegex = /^[A-Z]{1,10}/g;
   if (query.match(lettersRegex)) {
-    let matrix = query.split('\n');
+    // break the input down by lines
+    const matrix = query.split('\n');
+
     // @ts-ignore
-    const columns = matrix.shift().trim().split('');
-    return matrixSort(matrix, columns, []).join('');
+    // We want to first line cleaned up and turned into an array of characters. This we'll use for our columnKeys
+    const columnKeys = matrix.shift().trim().split('');
+    return matrixSort(matrix, columnKeys, []).join('');
   }
 
   return 'Still working on it ;)';
@@ -109,18 +112,24 @@ function handleSpecialCases(query: string): string {
  */
 function matrixSort(matrix: string[], columnKeys: string[], result: string[]): string[] {
   for (let i = 0; i < matrix.length; i++) {
-    let row = matrix[i].split('');
-    let rowKey: string = row.shift() || '';
+    // grab the current row and turn it into an array of chars
+    const row = matrix[i].split('');
+    // snag the first char off of each row, this we'll use for our rowKey
+    const rowKey: string = row.shift() || '';
 
     for (let col = 0; col < row.length; col++) {
-      let columnKey = columnKeys[col];
-      let rowVal = row[col];
-      if (rowVal === '=') {
+      const columnKey = columnKeys[col];
+      const rowColumnVal = row[col];
+
+      // if it's = place the rowKey and be done with this row
+      if (rowColumnVal === '=') {
         if (!result.includes(rowKey)) {
           result.push(rowKey);
         }
         break;
-      } else if (rowVal === '<') {
+      }
+
+      else if (rowColumnVal === '<') {
         if (result.includes(rowKey)) {
           if (result.includes(columnKey)) {
             if (result.indexOf(rowKey) > result.indexOf(columnKey)) {
@@ -139,7 +148,9 @@ function matrixSort(matrix: string[], columnKeys: string[], result: string[]): s
             result.push(columnKey);
           }
         }
-      } else if (rowVal === '>') {
+      }
+
+      else if (rowColumnVal === '>') {
         if (result.includes(rowKey)) {
           if (result.includes(columnKey)) {
             if (result.indexOf(rowKey) < result.indexOf(columnKey)) {
