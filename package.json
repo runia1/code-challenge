@@ -6,7 +6,7 @@
     "start": "ts-node src/index.ts",
     "prettify": "prettier --write \"src/**/*.{ts,js,md,json}\"",
     "lint": "eslint",
-    "run": "node build/server.js",
+    "run-dev": "LOGLEVEL=debug node build/server.js",
     "run-prod": "PORT=80 ADDRESS=0.0.0.0 node build/server.js"
   },
   "dependencies": {

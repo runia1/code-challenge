@@ -1,7 +1,11 @@
 import * as fastify from 'fastify';
 
+const logLevel = process.env.LOGLEVEL || 'info';
+
 const server = fastify({
-  logger: true
+  logger: {
+    level: logLevel,
+  }
 });
 
 server.get('/', async (request, reply) => {
