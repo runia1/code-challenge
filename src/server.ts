@@ -86,9 +86,13 @@ function handleSpecialCases(query: string): string {
     return output.join(' ');
   }
 
-  //
+  // weird letters thing
+  const lettersRegex = /^[A-Z]{1,10}/g;
+  if (query.match(lettersRegex)) {
 
+    return 'Still working on it ;)';
 
+  }
 
   return 'Still working on it ;)';
 }
