@@ -9,8 +9,7 @@ const server = fastify({
 });
 
 server.get('/', async (request, reply) => {
-  server.log.debug(request.headers);
-  server.log.debug(request.query);
+  server.log.debug({headers: request.headers, query: request.query});
 
   reply.type('text/plain');
 
