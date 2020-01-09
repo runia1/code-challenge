@@ -14,7 +14,11 @@ server.get('/', async (request, reply) => {
 });
 
 // Run the server!
-server.listen(3000, (err, address) => {
+const port = process.env.PORT || 3000;
+const address = process.env.ADDRESS || 'localhost';
+
+// @ts-ignore
+server.listen(port, address, (err: any, address: any) => {
   if (err) throw err;
   server.log.info(`server listening on ${address}`);
 });
