@@ -46,7 +46,7 @@ function handleSpecialCases(query: string): string {
     const oneWord = words.join('');
     let vowels = 0;
     let nonVowels = 0;
-    for(let i = 0; i<oneWord.length; i++) {
+    for (let i = 0; i < oneWord.length; i++) {
       const letter = oneWord[i];
 
       if ("aeiou".includes(letter)) {
@@ -61,7 +61,7 @@ function handleSpecialCases(query: string): string {
   // if it's one of the number ones
   const numberRegex = /^<[ \d]*>$/g;
   if (query.match(numberRegex)) {
-    const noBrackets = query.slice(1,-1);
+    const noBrackets = query.slice(1, -1);
     const numbers = noBrackets.trim().split(' ');
 
     let odds: number[] = [];
@@ -70,8 +70,7 @@ function handleSpecialCases(query: string): string {
       const tmp = parseInt(number);
       if (tmp % 2) {
         odds.push(tmp);
-      }
-      else {
+      } else {
         evens.push(tmp);
       }
     });
@@ -88,18 +87,83 @@ function handleSpecialCases(query: string): string {
     return output.join(' ');
   }
 
-  // weird letters thing
+  // letter sorting
   const lettersRegex = /^[A-Z]{1,10}/g;
   if (query.match(lettersRegex)) {
-
-    return 'Still working on it ;)';
-
+    let matrix = query.split('\n');
+    // @ts-ignore
+    const columns = matrix.shift().trim().split('');
+    return matrixSort(matrix, columns, []).join('');
   }
 
   return 'Still working on it ;)';
 }
 
-// Run the server!
+/**
+ * Matrix sorting algorithm take from: https://github.com/Kelley12/question-answer/blob/667dce8e796154dee693b2b5784d3ddcca71d47c/src/utils/jeeves.js#L70
+ * Modified to typescript and I changed some of the var names so they make more sense to me
+ *
+ * @param matrix
+ * @param columnKeys
+ * @param result
+ */
+function matrixSort(matrix: string[], columnKeys: string[], result: string[]): string[] {
+  for (let i = 0; i < matrix.length; i++) {
+    let row = matrix[i].split('');
+    let rowKey: string = row.shift() || '';
+
+    for (let col = 0; col < row.length; col++) {
+      let columnKey = columnKeys[col];
+      let rowVal = row[col];
+      if (rowVal === '=') {
+        if (!result.includes(rowKey)) {
+          result.push(rowKey);
+        }
+        break;
+      } else if (rowVal === '<') {
+        if (result.includes(rowKey)) {
+          if (result.includes(columnKey)) {
+            if (result.indexOf(rowKey) > result.indexOf(columnKey)) {
+              result.splice(result.indexOf(columnKey), 1);
+              result.splice(result.indexOf(rowKey) + 1, 0, columnKey);
+              return matrixSort(matrix, columnKeys, result);
+            }
+          } else {
+            result.splice(result.indexOf(rowKey) + 1, 0, columnKey);
+          }
+        } else {
+          if (result.includes(columnKey)) {
+            result.splice(result.indexOf(columnKey), 0, rowKey);
+          } else {
+            result.push(rowKey);
+            result.push(columnKey);
+          }
+        }
+      } else if (rowVal === '>') {
+        if (result.includes(rowKey)) {
+          if (result.includes(columnKey)) {
+            if (result.indexOf(rowKey) < result.indexOf(columnKey)) {
+              result.splice(result.indexOf(rowKey), 1);
+              result.splice(result.indexOf(columnKey) + 1, 0, rowKey);
+              return matrixSort(matrix, columnKeys, result);
+            }
+          } else {
+            result.splice(result.indexOf(rowKey), 0, columnKey);
+          }
+        } else {
+          if (result.includes(columnKey)) {
+            result.splice(result.indexOf(columnKey) + 1, 0, rowKey);
+          } else {
+            result.push(columnKey);
+            result.push(rowKey);
+          }
+        }
+      }
+    }
+  }
+  return result;
+}
+
 const port = process.env.PORT || 3000;
 const address = process.env.ADDRESS || 'localhost';
 
