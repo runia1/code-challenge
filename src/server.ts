@@ -19,6 +19,8 @@ server.get('/', async (request, reply) => {
       return 'Max Runia';
     case 'What is your quest?':
       return 'coding';
+    case 'Source code for this exercise?':
+      return 'https://github.com/runia1/code-challenge';
     default:
       return handleSpecialCases(request.query.q.trim());
   }
